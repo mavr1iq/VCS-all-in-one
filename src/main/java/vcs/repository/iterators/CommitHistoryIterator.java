@@ -17,6 +17,7 @@ public class CommitHistoryIterator implements Iterator<Commit> {
 
         Commit commit = commitDao.getById(startId);
         this.firstCommit = commit;
+        this.currentCommit = commit;
 
         if (commit != null) {
             this.nextCommitId = commit.getParent_commit();
@@ -35,12 +36,13 @@ public class CommitHistoryIterator implements Iterator<Commit> {
         if (hasNext()) {
             Commit commit = commitDao.getById(nextCommitId);
             nextCommitId = commit.getParent_commit();
+            this.currentCommit = commit;
             return commit;
         }
         return null;
     }
 
-    public Commit currentItem() {
+    public Commit current() {
         return currentCommit;
     }
 
