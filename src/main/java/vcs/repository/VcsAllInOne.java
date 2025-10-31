@@ -10,7 +10,10 @@ public class VcsAllInOne {
         DatabaseContext dbContext = new DatabaseContext();
         CommitDao commitDao = new CommitDao(dbContext);
 
-        Commit commit = commitDao.getById(1);
-        System.out.println(commit);
+        Iterable<Commit> commits = commitDao.getAllPreviousCommitsById(5);
+
+        for (Commit commit : commits) {
+            System.out.println(commit);
+        }
     }
 }
