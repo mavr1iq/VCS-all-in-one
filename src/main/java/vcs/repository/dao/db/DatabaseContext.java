@@ -1,12 +1,22 @@
 package vcs.repository.dao.db;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.*;
+import java.util.Properties;
 
 public class DatabaseContext {
     private final String url;
 
-    public DatabaseContext(String url) {
-        this.url = url;
+    public DatabaseContext() {
+        Properties props = new Properties();
+        try (FileInputStream fis = new FileInputStream("src/main/resources/db.properties")) {
+            props.load(fis);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        this.url = props.getProperty("db.url");
         init();
     }
     private void init() {

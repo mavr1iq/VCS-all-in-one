@@ -3,12 +3,14 @@ package vcs.repository.dao.impl;
 import vcs.repository.classes.Commit;
 import vcs.repository.dao.GeneralDao;
 import vcs.repository.dao.db.DatabaseContext;
+import vcs.repository.iterators.CommitHistoryIterator;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class CommitDao implements GeneralDao<Commit> {
@@ -67,15 +69,8 @@ public class CommitDao implements GeneralDao<Commit> {
         return null;
     }
 
-    public List<Commit> getAllPreviousCommitsById(int id) {
-        List<Commit> commits = new ArrayList<>();
-        int parent_id = getById(id).getParent_commit();
-        while (parent_id != 0) {
-            Commit commit = getById(parent_id);
-            commits.add(commit);
-            parent_id = commit.getParent_commit();
-        }
-        return commits;
+    public Iterable<Commit> getAllPreviousCommitsById(int id) {
+        return () -> new CommitHistoryIterator(id, CommitDao.this);
     }
 
     @Override
