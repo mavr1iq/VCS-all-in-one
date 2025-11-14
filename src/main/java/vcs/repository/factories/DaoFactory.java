@@ -1,6 +1,5 @@
 package vcs.repository.factories;
 
-import vcs.repository.dao.GeneralDao;
 import vcs.repository.dao.db.DatabaseContext;
 import vcs.repository.dao.impl.BranchDao;
 import vcs.repository.dao.impl.CommitDao;
