@@ -5,8 +5,14 @@ import vcs.repository.adapters.GitAdapter;
 import vcs.repository.adapters.MercurialAdapter;
 import vcs.repository.adapters.SvnAdapter;
 import vcs.repository.adapters.VcsAdapter;
+import vcs.repository.dao.db.DatabaseContext;
 
 public class AdapterFactory {
+    DaoFactory daoFactory;
+
+    public AdapterFactory(DaoFactory daoFactory) {
+        this.daoFactory = daoFactory;
+    }
 
     public VcsAdapter getAdapter(VcsType type) {
         if (type == null) {
@@ -14,9 +20,9 @@ public class AdapterFactory {
         }
 
         return switch (type) {
-            case GIT -> new GitAdapter();
-            case SVN -> new SvnAdapter();
-            case MERCURIAL -> new MercurialAdapter();
+            case GIT -> new GitAdapter(daoFactory);
+            case SVN -> new SvnAdapter(daoFactory);
+            case MERCURIAL -> new MercurialAdapter(daoFactory);
             default -> throw new IllegalArgumentException("Unknown VCS type: " + type);
         };
     }

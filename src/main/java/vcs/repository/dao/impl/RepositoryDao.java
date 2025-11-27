@@ -32,7 +32,7 @@ public class RepositoryDao implements GeneralDao<Repository> {
                     repo.setRepo_id(rs.getInt("repo_id"));
                     repo.setName(rs.getString("name"));
                     repo.setUrl(rs.getString("url"));
-                    repo.setType((VcsType) rs.getObject("type"));
+                    repo.setType(VcsType.valueOf(rs.getObject("type").toString()));
                     repo.setOwner_id(rs.getInt("owner_id"));
                     repo.setDescription(rs.getString("description"));
                     return repo;
@@ -57,7 +57,7 @@ public class RepositoryDao implements GeneralDao<Repository> {
                     repo.setRepo_id(rs.getInt("repo_id"));
                     repo.setName(rs.getString("name"));
                     repo.setUrl(rs.getString("url"));
-                    repo.setType((VcsType) rs.getObject("type"));
+                    repo.setType(VcsType.valueOf(rs.getObject("type").toString()));
                     repo.setOwner_id(rs.getInt("owner_id"));
                     repo.setDescription(rs.getString("description"));
                     repos.add(repo);
@@ -95,12 +95,12 @@ public class RepositoryDao implements GeneralDao<Repository> {
 
     @Override
     public void add(Repository repository) {
-        String sql = "INSERT INTO repositories (name, url, type, owner_id, description) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO repositories (name, url, type, owner_id, description) VALUES (?, ?, ?::vcs, ?, ?)";
         try (Connection conn = dbContext.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, repository.getName());
             ps.setString(2, repository.getUrl());
-            ps.setString(3, String.valueOf(repository.getType()));
+            ps.setString(3, repository.getType().name());
             ps.setInt(4, repository.getOwner_id());
             ps.setString(5, repository.getDescription());
             ps.executeUpdate();
@@ -136,5 +136,53 @@ public class RepositoryDao implements GeneralDao<Repository> {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+    }
+
+    public Repository getByPath(String path) {
+        String sql = "SELECT * FROM repositories WHERE url = ?";
+        try (Connection conn = dbContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, path);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Repository repo = new Repository();
+                    repo.setRepo_id(rs.getInt("repo_id"));
+                    repo.setName(rs.getString("name"));
+                    repo.setUrl(rs.getString("url"));
+                    repo.setType(VcsType.valueOf(rs.getObject("type").toString()));
+                    repo.setOwner_id(rs.getInt("owner_id"));
+                    repo.setDescription(rs.getString("description"));
+                    return repo;
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    public Repository getByName(String name) {
+        String sql = "SELECT * FROM repositories WHERE name = ?";
+        try (Connection conn = dbContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, name);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Repository repo = new Repository();
+                    repo.setRepo_id(rs.getInt("repo_id"));
+                    repo.setName(rs.getString("name"));
+                    repo.setUrl(rs.getString("url"));
+                    repo.setType(VcsType.valueOf(rs.getObject("type").toString()));
+                    repo.setOwner_id(rs.getInt("owner_id"));
+                    repo.setDescription(rs.getString("description"));
+                    return repo;
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 }

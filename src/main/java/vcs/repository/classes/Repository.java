@@ -19,10 +19,10 @@ public class Repository {
     public String getUrl() { return url; }
     public String getDescription() { return description; }
 
-    public void setRepo_id(int repo_id) { this.repo_id = repo_id; }
-    public void setName(String name) { this.name = name; }
-    public void setOwner_id(int owner_id) { this.owner_id = owner_id; }
-    public void setType(VcsType type) { this.type = type; }
-    public void setUrl(String url) { this.url = url; }
-    public void setDescription(String description) { this.description = description; }
+    public Repository setRepo_id(int repo_id) { this.repo_id = repo_id; return this; }
+    public Repository setName(String name) { this.name = name; return this; }
+    public Repository setOwner_id(int owner_id) { this.owner_id = owner_id; return this; }
+    public Repository setType(VcsType type) { this.type = type; return this; }
+    public Repository setUrl(String url) { this.url = url; return this; }
+    public Repository setDescription(String description) { this.description = description; return this; }
 }

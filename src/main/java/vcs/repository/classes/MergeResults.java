@@ -2,11 +2,11 @@ package vcs.repository.classes;
 
 import java.util.List;
 
-public class MergeResult {
+public class MergeResults {
     private final boolean success;
     private final List<FileConflict> conflicts;
 
-    public MergeResult(boolean success, List<FileConflict> conflicts) {
+    public MergeResults(boolean success, List<FileConflict> conflicts) {
         this.success = success;
         this.conflicts = conflicts;
     }

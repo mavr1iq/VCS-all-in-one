@@ -74,13 +74,25 @@ public class CommitDao implements GeneralDao<Commit> {
 
     @Override
     public void add(Commit commit) {
-        String sql = "INSERT INTO commits(author_id, parent_commit, message, branch_id) VALUES(?, ?, ?, ?)";
+        String sql = "";
+        if (commit.getParent_commit() == 0) {
+            sql = "INSERT INTO commits(author_id, message, branch_id) VALUES(?, ?, ?)";
+        } else {
+            sql = "INSERT INTO commits(author_id, parent_commit, message, branch_id) VALUES(?, ?, ?, ?)";
+        }
+
         try (Connection conn = dbContext.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, commit.getAuthor_id());
-            ps.setInt(2, commit.getParent_commit());
-            ps.setString(3, commit.getMessage());
-            ps.setInt(4, commit.getBranch_id());
+            if (commit.getParent_commit() == 0) {
+                ps.setString(2, commit.getMessage());
+                ps.setInt(3, commit.getBranch_id());
+            } else {
+                ps.setInt(2, commit.getParent_commit());
+                ps.setString(3, commit.getMessage());
+                ps.setInt(4, commit.getBranch_id());
+            }
+
             ps.executeUpdate();
         }catch (SQLException ex) {
             ex.printStackTrace();
@@ -113,5 +125,28 @@ public class CommitDao implements GeneralDao<Commit> {
         }catch (SQLException ex) {
             ex.printStackTrace();
         }
+    }
+
+    public Commit getCommitByMessageAndBranchId(Commit commit) {
+        String sql = "SELECT * FROM commits WHERE branch_id = ? AND message LIKE ?";
+        try (Connection conn = dbContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, commit.getBranch_id());
+            ps.setString(2, "%"+commit.getMessage()+"%");
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Commit result = new Commit();
+                    result.setParent_commit(rs.getInt("parent_commit"));
+                    result.setAuthor_id(rs.getInt("author_id"));
+                    result.setCommit_Id(rs.getInt("commit_id"));
+                    result.setMessage(rs.getString("message"));
+                    result.setBranch_Id(rs.getInt("branch_id"));
+                    return result;
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 }

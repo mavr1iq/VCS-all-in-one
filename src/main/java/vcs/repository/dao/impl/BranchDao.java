@@ -130,4 +130,26 @@ public class BranchDao implements GeneralDao<Branch> {
             ex.printStackTrace();
         }
     }
+
+    public Branch findByRepoIdAndName(int repo_id, String name) {
+        String sql = "SELECT * FROM branches WHERE repo_id = ? AND name = ?";
+        try (Connection conn = dbContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, repo_id);
+            ps.setString(2, name);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Branch result = new Branch();
+                    result.setBranch_id(rs.getInt("branch_id"));
+                    result.setName(rs.getString("name"));
+                    result.setCreated_by(rs.getInt("created_by"));
+                    result.setRepo_id(rs.getInt("repo_id"));
+                    return result;
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
 }

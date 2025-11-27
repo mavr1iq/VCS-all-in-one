@@ -11,8 +11,8 @@ public class Branch {
     public int getCreated_by() { return created_by; }
     public int getRepo_id() { return repo_id; }
 
-    public void setName(String name) { this.name = name; }
-    public void setBranch_id(int branch_id) { this.branch_id = branch_id; }
-    public void setCreated_by(int created_by) { this.created_by = created_by; }
-    public void setRepo_id(int repoId) { this.repo_id = repoId; }
+    public Branch setName(String name) { this.name = name; return this; }
+    public Branch setBranch_id(int branch_id) { this.branch_id = branch_id; return this; }
+    public Branch setCreated_by(int created_by) { this.created_by = created_by; return this; }
+    public Branch setRepo_id(int repoId) { this.repo_id = repoId; return this; }
 }
